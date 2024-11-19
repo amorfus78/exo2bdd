@@ -1,13 +1,23 @@
 package com.exo1.exo1.controller;
 
-import com.exo1.exo1.dto.TaskDto;
-import com.exo1.exo1.service.TaskService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.exo1.exo1.dto.TaskDto;
+import com.exo1.exo1.service.TaskService;
 
 @RestController
 @RequestMapping("/tasks")
@@ -16,9 +26,13 @@ public class TaskController {
     private TaskService taskService;
 
     @GetMapping
-    public ResponseEntity<List<TaskDto>> findAll()
+    public ResponseEntity<List<TaskDto>> findAll(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size
+    )
     {
-        return ResponseEntity.ok(taskService.findAll());
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(taskService.findAll(pageable));
     }
 
     @GetMapping("/{id}")

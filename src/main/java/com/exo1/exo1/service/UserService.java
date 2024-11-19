@@ -1,18 +1,21 @@
 package com.exo1.exo1.service;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
+
 import com.exo1.exo1.dto.UserDto;
 import com.exo1.exo1.entity.User;
 import com.exo1.exo1.mapper.UserMapper;
 import com.exo1.exo1.repository.ProjetRepository;
 import com.exo1.exo1.repository.TaskRepository;
 import com.exo1.exo1.repository.UserRepository;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
@@ -24,6 +27,10 @@ public class UserService {
     
     public List<UserDto> findAll() {
         return userMapper.toDtos(userRepository.findAll());
+    }
+
+    public List<UserDto> findAll(Pageable pageable) {
+        return userMapper.toDtos(userRepository.findAll(pageable).getContent());
     }
 
     public UserDto findById(long id) {

@@ -1,14 +1,17 @@
 package com.exo1.exo1.service;
 
+import java.util.List;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
+
 import com.exo1.exo1.dto.TaskDto;
 import com.exo1.exo1.entity.Task;
 import com.exo1.exo1.mapper.TaskMapper;
 import com.exo1.exo1.repository.TaskRepository;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 
-import java.util.List;
+import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
@@ -18,6 +21,10 @@ public class TaskService {
 
     public List<TaskDto> findAll() {
         return taskMapper.toDtos(taskRepository.findAll());
+    }
+
+    public List<TaskDto> findAll(Pageable pageable) {
+        return taskMapper.toDtos(taskRepository.findAll(pageable).getContent());
     }
 
     public TaskDto findById(long id) {
