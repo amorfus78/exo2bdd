@@ -4,6 +4,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
@@ -24,7 +27,7 @@ public class UserService {
     private TaskRepository taskRepository;
     private ProjetRepository projetRepository;
     private UserMapper userMapper;
-    
+
     public List<UserDto> findAll() {
         return userMapper.toDtos(userRepository.findAll());
     }
@@ -33,6 +36,7 @@ public class UserService {
         return userMapper.toDtos(userRepository.findAll(pageable).getContent());
     }
 
+    @Cacheable(value = "users", key = "#id")
     public UserDto findById(long id) {
         return userMapper.toDto(userRepository.findByIdWithTask(id).orElse(null));
     }
@@ -45,6 +49,7 @@ public class UserService {
         return userMapper.toDto(userRepository.save(user));
     }
 
+    @CachePut(value = "users", key = "#id")
     public UserDto update(Long id, UserDto userDto) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found with id " + id));
@@ -64,6 +69,7 @@ public class UserService {
         return userMapper.toDto(userRepository.save(userUpdated));
     }
 
+    @CacheEvict(value = "users", key = "#id")
     public void delete(Long id) {
         userRepository.deleteById(id);
     }
